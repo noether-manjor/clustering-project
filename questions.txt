@@ -1,0 +1,15 @@
+Q U E S T I O N
+Why do we scale data? Isn't it true that the distance difference is the same in unscaled data when using decimals? Isn't the space between whole number infinite?
+
+
+A N S W E R
+The distance between decimal numbers can be different from the distance between whole numbers, even when expressed as decimals.
+
+For example, the difference between 1.0 and 1.5 is 0.5, while the difference between 5 and 10 is 5. These differences might appear to be the same when expressed as decimals, but they are not.
+
+Additionally, when using clustering algorithms, variables with different scales can have vastly different ranges, leading to one variable dominating the distance calculation and creating a bias in the clustering results. Scaling helps to mitigate this issue by transforming the variables into comparable units, allowing the clustering algorithm to find meaningful structures in the data.
+
+For example, if one data point had the value of 1,000 and another had the value of 10,000, the algorithm would consider them to be very close together due to the difference in their values. However, if the data was scaled so that both points had a value of 1, then the algorithm would recognize the difference and group them into different clusters. 
+
+
+Moreover, while the space between whole numbers is indeed infinite, clustering algorithms cannot work with decimals due to the way they are programmed. Therefore, scaling the data is the best way to ensure accurate clustering results.
