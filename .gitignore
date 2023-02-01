@@ -4,7 +4,6 @@ __pycache__
 *.csv
 *.ipynb_checkpoints*
 *.pdf
-*.png
 *.doc
 *.xls
 
