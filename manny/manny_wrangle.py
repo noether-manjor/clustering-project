@@ -470,6 +470,25 @@ def handle_missing_values(df, prop_required_column, prop_required_row):
     # Return the new DataFrame
     return df
 
+def outlier_bound_calculator(df,k=1.5):
+    '''
+        This function calculates the lower and upper bound 
+        to detect outliers and prints them for every numerical
+        column.
+    '''
+    # list of only numerical columns
+    continuous,_ = separate_column_type_list(df)
+    
+    # loop to print all bounds for each column
+    for column in continuous:
+        # calculating quartiles, IQR, and bounds
+        quartile1, quartile3 = np.percentile(df[column], [25,75])
+        IQR_value = quartile3 - quartile1
+        lower_bound = quartile1 - (k * IQR_value)
+        upper_bound = quartile3 + (k * IQR_value)
+        
+        print(f'For {column} the lower bound is {lower_bound} and  upper bound is {upper_bound}')
+
 def separate_column_type_list(df):
     '''
         Creates 2 lists separating continous & discrete
@@ -557,26 +576,40 @@ def lower_outlier_detector(dataframe,column,k=1.5):
 
     return np.where(dataframe[column]<lower_bound,1,0)
 
-def lower_outliers_summary(df):
+def lower_outliers(df):
     '''
         uses lower_outlier_detector() and selects only
         numerical columns from incoming DataFrame
     '''
     num, _ = separate_column_type_list(df)
     
-    summary = pd.DataFrame()
+    outliers = pd.DataFrame()
+    
+    for col in num:
+    # creates a new column with suffix `_lower_outliers` and adds 1 or 0
+        outliers[f'{col}_lower_outliers'] = lower_outlier_detector(df,col)
+
+    return outliers.sum().sort_values(ascending=False)
+def upper_outliers(df):
+    '''
+        uses upper_outlier_detector() and selects only
+        numerical columns from incoming DataFrame
+    '''
+    num, _ = separate_column_type_list(df)
+    
+    outliers = pd.DataFrame()
     
     for col in num:
     # creates a new column with suffix `_upper_outliers` and adds 1 or 0
-        summary[f'{col}_upper_outliers'] = upper_outlier_detector(df,col)
+        outliers[f'{col}_upper_outliers'] = upper_outlier_detector(df,col)
 
-    return summary.sum().sort_values(ascending=False)
-
+    return outliers.sum().sort_values(ascending=False)
 def all_outliers(df):
     '''
         Given numerical columns in a DataFrame:
-        This function will give you all outliers.
-        Outside both Uppler & Lower Bound.
+        This function will give you total count of 
+        all outliers outside both Uppler & Lower bound.
+        Sorted Greatest to Least.
     '''
     # calculate interquartile range
     Q1 = df.quantile(0.25)
@@ -586,9 +619,9 @@ def all_outliers(df):
     # detect outliers
     outliers = (df < (Q1 - 1.5 * IQR)) | (df > (Q3 + 1.5 * IQR))
 
-    return outliers
+    return outliers.sum().sort_values(ascending=False)
 
-def all_outliers_summary(df):
+def all_outliers_split_bounds(df):
     '''
         Given a DataFrame this function will
         select all numerical columns.
@@ -605,3 +638,57 @@ def all_outliers_summary(df):
         summary[f'{col}_lower_outliers'] = lower_outlier_detector(df,col)
 
     return summary.sum().sort_values(ascending=False)
+
+def rename_columns(df):
+    # rename all columns to `snake_case`
+    # lower() all columns, then replace() spaces with underscores
+    return df.rename(columns=lambda x: x.lower().replace(" ", "_"), inplace=True)
+
+def data_dictionary(df):
+    # Printing a data dictionary using a printout of each column name
+    # formatted as a MarkDown table
+    # =================================================================
+
+    # variable to hold size of longest string in dataframe column names
+    size_longest_name = len((max((df.columns.to_list()), key = len)))
+
+    # head of markdown table
+    print(f"| {'Name' : <{size_longest_name}} | Definition |")
+    print(f"| {'-'*size_longest_name} | {'-'*len('Definition')} |")
+
+    # dataframe column content
+    for i in (df.columns.to_list()):
+        print(f"| {i : <{size_longest_name}} | Definition |")
+
+def handle_outliers(df,col_list,k):
+    ''' 
+        This function takes in a dataframe, the threshold and a list of columns 
+        and returns the dataframe with outliers removed
+    '''   
+    for col in col_list:
+
+        q1, q3 = df[col].quantile([.25, .75])  # get quartiles
+        
+        iqr = q3 - q1   # calculate interquartile range
+        
+        upper_bound = q3 + k * iqr   # get upper bound
+        lower_bound = q1 - k * iqr   # get lower bound
+
+        # return dataframe without outliers
+        
+        df = df[(df[col] > lower_bound) & (df[col] < upper_bound)]
+        
+    return df
+
+def get_boxplot_distributions(df):
+    num,_ = separate_column_type_list(df)
+    for col in num:
+    
+    plt.boxplot(df[col])
+    plt.title(f'distribution of {col}')
+    plt.show()
+def get_dummies(df,column):
+    to_dummy=column
+    dummies = pd.get_dummies(df[to_dummy], drop_first=True)
+    df = pd.concat([df, dummies], axis=1)
+    return df
