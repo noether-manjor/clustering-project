@@ -6,11 +6,16 @@ def eval_results(p, alpha, group1, group2):
         whether or not there exists a relationship between the 2 groups. 
     '''
     if p < alpha:
-        return f'There exists some relationship between {group1} and {group2}. (p-value: {p:.4f})'
+        display(Markdown(f"### Results:"))
+        display(Markdown(f"### Reject $H_0$"))
+        display(Markdown( f'There exists some relationship between {group1} and {group2}. (p-value: {p:.4f})'))
+    
     else:
-        return f'There is not a significant relationship between {group1} and {group2}. (p-value: {p:.4f})'
+        display(Markdown(f"### Results:"))
+        display(Markdown(f"### Failed to Reject $H_0$"))
+        display(Markdown( f'There is not a significant relationship between {group1} and {group2}. (p-value: {p:.4f})'))
 
-def question_hypothesis_test(question_number,df,column_name,target,alpha=.05):
+def question_hypothesis_test(question_number,df,column_name,question,target,alpha=.05):
     num, cat = separate_column_type_list(df)
     
     if (target in cat) and (column_name in num):
@@ -26,13 +31,14 @@ def question_hypothesis_test(question_number,df,column_name,target,alpha=.05):
 
         # Markdown Formatting
         display(Markdown(f"# Question #{question_number}:"))
+        display(Markdown(f"# {question}"))
         display(Markdown(f"### Hypothesis:"))
-        display(Markdown(f"$H_0$: There is no correlation with `{column_name}` to `{target}`"))
-        display(Markdown(f"$H_A$: There is a correlation between `{column_name}` and `{target}` "))
+        display(Markdown(f"$H_0$: There is no relationship between `{column_name}` and `{target}`"))
+        display(Markdown(f"$H_A$: There is a relationship between `{column_name}` and `{target}` "))
         display(Markdown(f"### Statistics Test:"))
         display(Markdown(f"### `{test} = {value}`"))
 
-        display(Markdown(eval_results(p_value, alpha, column_name, target)))
+        eval_results_2(p_value, alpha, column_name, target)
         
     elif (target in cat) and (column_name in cat):
         # calculations
@@ -46,13 +52,16 @@ def question_hypothesis_test(question_number,df,column_name,target,alpha=.05):
 
         # Markdown Formatting
         display(Markdown(f"# Question #{question_number}:"))
+        display(Markdown(f"# {question}"))
         display(Markdown(f"### Hypothesis:"))
-        display(Markdown(f"$H_0$: There is no correlation with `{column_name}` to `{target}`"))
-        display(Markdown(f"$H_A$: There is a correlation between `{column_name}` and `{target}` "))
+        display(Markdown(f"$H_0$: There is no relationship between `{column_name}` to `{target}`"))
+        display(Markdown(f"$H_A$: There is a relationship between `{column_name}` and `{target}` "))
         display(Markdown(f"### Statistics Test:"))
         display(Markdown(f"### `{test} = {value}`"))
 
-        display(Markdown(eval_results(p_value, alpha, column_name, target)))
+        eval_results_2(p_value, alpha, column_name, target)
+    else:
+        print("write code for different test")
 
 def rename_columns(df):
     # rename all columns to `snake_case`
