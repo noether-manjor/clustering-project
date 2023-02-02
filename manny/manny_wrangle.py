@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-from manny_env import get_db_url
+from env import get_db_url
 
 from scipy import stats
 from sklearn.model_selection import train_test_split
@@ -513,9 +513,9 @@ def separate_column_type_list(df):
     discrete_columns = []
     
     for column in df.columns:
-        if (df[column].dtype == 'int' or df[column].dtype == 'float') and ('id' not in column):
+        if (df[column].dtype == 'int' or df[column].dtype == 'float') and ('id' not in column) and (df[column].nunique()>10):
             continuous_columns.append(column)
-        elif(df[column].dtype == 'int' or df[column].dtype == 'float') and (df[column].nunique()>5):
+        elif(df[column].dtype == 'int' or df[column].dtype == 'float') and (df[column].nunique()>11):
             continuous_columns.append(column)
         else:
             discrete_columns.append(column)
@@ -692,11 +692,14 @@ def get_boxplot_distributions(df):
         plt.show()
     
 def question_hypothesis(question_number,df,column_name,target,alpha=.05):
+    df[column_name]
+    
     display(Markdown(f"# Question #{question_number}:"))
     display(Markdown(f"### Hypothesis:"))
     display(Markdown(f"$H_0$: There is no correlation with `{column_name}` to `{target}`"))
     display(Markdown(f"$H_A$: There is a correlation between `{column_name}` and `{target}` "))
-    r, p = stats.pearsonr(df[column_name], df[target])
+    #r, p = stats.pearsonr(df[column_name], df[target])
+    stats.ttest
     display(Markdown(f"### Statistics Test:"))
     display(Markdown(f"### `Pearson's R = {r}`"))
 
