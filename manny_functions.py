@@ -41,6 +41,7 @@ def question_hypothesis_test(question_number,df,column_name,target,alpha=.05):
         display(Markdown(f"### `{test} = {value}`"))
 
         display(Markdown(eval_results(p_value, alpha, column_name, target)))
+
 def rename_columns(df):
     # rename all columns to `snake_case`
     # lower() all columns, then replace() spaces with underscores
@@ -91,4 +92,32 @@ def separate_column_type_list(df):
             discrete_columns.append(column)
             
     return continuous_columns, discrete_columns
+
+def question_3_visual(df):
+    question = "Is there a relationship between Citric Acid and Quality?"
+
+    x = wines.quality
+    y = wines.citric_acid
+
+    fig, ax = plt.subplots()
+
+    ax.bar(x,y, width=0.1, color="lightblue", zorder=0)
+    sns.regplot(x=x, y=y, ax=ax)
+    ax.set_ylim(0, None)
+    plt.suptitle(f"{question}")
+
+    plt.show()
+
+def question_4_visual(df):
+    question = "Is there a realationship between Free Sulfur Dioxide and Quality?"
+    x = df["quality"]
+    y = df["free_sulfur_dioxide"]
+
+    fig, ax = plt.subplots()
+
+    ax.bar(x,y, width=0.5, color="blue", zorder=0)
+    sns.regplot(x=x, y=y, ax=ax,color="red")
+    ax.set_ylim(0, None)
+    plt.suptitle(f"{question}")
+    plt.show()
 
