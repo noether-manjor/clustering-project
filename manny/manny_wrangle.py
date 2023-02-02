@@ -6,8 +6,11 @@ import os
 
 from manny_env import get_db_url
 
+from scipy import stats
 from sklearn.model_selection import train_test_split
+
 import sklearn.preprocessing
+from IPython.display import display, Markdown
 
 #                             _              _        
 #                          __| | _   _  ___ | |_  ___ 
@@ -684,9 +687,21 @@ def get_boxplot_distributions(df):
     num,_ = separate_column_type_list(df)
     for col in num:
     
-    plt.boxplot(df[col])
-    plt.title(f'distribution of {col}')
-    plt.show()
+        plt.boxplot(df[col])
+        plt.title(f'distribution of {col}')
+        plt.show()
+    
+def question_hypothesis(question_number,df,column_name,target,alpha=.05):
+    display(Markdown(f"# Question #{question_number}:"))
+    display(Markdown(f"### Hypothesis:"))
+    display(Markdown(f"$H_0$: There is no correlation with `{column_name}` to `{target}`"))
+    display(Markdown(f"$H_A$: There is a correlation between `{column_name}` and `{target}` "))
+    r, p = stats.pearsonr(df[column_name], df[target])
+    display(Markdown(f"### Statistics Test:"))
+    display(Markdown(f"### `Pearson's R = {r}`"))
+
+    display(Markdown(eval_results(p, alpha, column_name, target)))
+    
 def get_dummies(df,column):
     to_dummy=column
     dummies = pd.get_dummies(df[to_dummy], drop_first=True)
