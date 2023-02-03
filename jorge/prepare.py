@@ -28,13 +28,13 @@ def prep_wine(red_wine, white_wine):
                             })
     
     # Create dummies for non-binart categorical variables
-    to_dummy = ['wine_color']
-    dummies = pd.get_dummies(wines[to_dummy], drop_first=False)
-    wines = pd.concat([wines, dummies], axis=1)
+    # to_dummy = ['wine_color']
+    # dummies = pd.get_dummies(wines[to_dummy], drop_first=False)
+    # wines = pd.concat([wines, dummies], axis=1)
     
     # drop redundant column
-    drop = ['wine_color']
-    wines.drop(columns=drop, inplace=True)
+    # drop = ['wine_color']
+    # wines.drop(columns=drop, inplace=True)
     # get rid of outliers
     col_list = ['fixed_acidity', 'volatile_acidity', 'citric_acid',
                             'residual_sugar', 'chlorides', 'free_sulfur_dioxide',
