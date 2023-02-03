@@ -1,3 +1,11 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+import seaborn as sns
+import acquire
+import prepare
+
 def separate_column_type_list(df):
     '''
         Creates 2 lists separating continous & discrete
@@ -114,11 +122,35 @@ def data_dictionary(df):
     for i in (df.columns.to_list()):
         print(f"| {i : <{size_longest_name}} | Definition |")
 
+def question_1_visual(df):
+    question = "Does color affect wine quality?"
+    mean_line = df["quality"].mean()
+
+    sns.barplot(data=df, x="wine_color",y="quality")
+    plt.axhline(mean_line, color='red', linestyle='--')
+    plt.suptitle(f"{question}")
+    plt.show()
+
+def question_2_visual(df):
+    question = "Does a higher quality mean higher alcohol content??"
+
+    x = df['quality']
+    y = df['alcohol']
+
+    fig, ax = plt.subplots()
+
+    ax.bar(x,y, width=0.1, color="lightblue", zorder=0)
+    sns.regplot(x=x, y=y, ax=ax)
+    ax.set_ylim(0, None)
+    plt.suptitle(f"{question}")
+
+    plt.show()
+
 def question_3_visual(df):
     question = "Is there a relationship between Citric Acid and Quality?"
 
-    x = wines.quality
-    y = wines.citric_acid
+    x = df['quality']
+    y = df['citric_acid']
 
     fig, ax = plt.subplots()
 
