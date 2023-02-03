@@ -3,6 +3,8 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy import stats
+from IPython.display import display, Markdown
 import acquire
 import prepare
 
@@ -36,7 +38,7 @@ def separate_column_type_list(df):
             
     return continuous_columns, discrete_columns
 
-def eval_results(p, alpha, group1, group2):
+def eval_results_2(p, alpha, group1, group2):
     '''
         Test Hypothesis  using Statistics Test Output.
         This function will take in the p-value, alpha, and a name for the 2 variables
@@ -58,8 +60,8 @@ def question_hypothesis_test(question_number,df,column_name,question,target,alph
     
     if (target in cat) and (column_name in num):
         # calculation
-        overall_alcohol_mean = wines[column_name].mean()
-        quality_sample = wines[wines[target] >= 7][target]
+        overall_alcohol_mean = df[column_name].mean()
+        quality_sample = df[df[target] >= 7][target]
         t, p = stats.ttest_1samp(quality_sample, overall_alcohol_mean)
         value = t
         p_value = p/2
@@ -126,22 +128,15 @@ def question_1_visual(df):
     question = "Does color affect wine quality?"
     mean_line = df["quality"].mean()
 
-    sns.barplot(data=df, x="wine_color",y="quality")
-    plt.axhline(mean_line, color='red', linestyle='--')
+    sns.barplot(data=df, x="wine_color",y="quality", palette='husl')
+    plt.axhline(mean_line, color='purple', linestyle='--')
     plt.suptitle(f"{question}")
     plt.show()
 
 def question_2_visual(df):
     question = "Does a higher quality mean higher alcohol content??"
 
-    x = df['quality']
-    y = df['alcohol']
-
-    fig, ax = plt.subplots()
-
-    ax.bar(x,y, width=0.1, color="lightblue", zorder=0)
-    sns.regplot(x=x, y=y, ax=ax)
-    ax.set_ylim(0, None)
+    sns.boxplot(x=df.quality, y=df.alcohol)
     plt.suptitle(f"{question}")
 
     plt.show()
@@ -154,7 +149,7 @@ def question_3_visual(df):
 
     fig, ax = plt.subplots()
 
-    ax.bar(x,y, width=0.1, color="lightblue", zorder=0)
+    ax.bar(x,y, width=0.1, color="pink", zorder=0)
     sns.regplot(x=x, y=y, ax=ax)
     ax.set_ylim(0, None)
     plt.suptitle(f"{question}")
@@ -168,8 +163,8 @@ def question_4_visual(df):
 
     fig, ax = plt.subplots()
 
-    ax.bar(x,y, width=0.5, color="blue", zorder=0)
-    sns.regplot(x=x, y=y, ax=ax,color="red")
+    ax.bar(x,y, width=0.5, color="deepskyblue", zorder=0)
+    sns.regplot(x=x, y=y, ax=ax,color="palevioletred")
     ax.set_ylim(0, None)
     plt.suptitle(f"{question}")
     plt.show()
