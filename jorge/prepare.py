@@ -60,6 +60,7 @@ def split_data(df, target):
     Returns train, validate, test, X_train, y_train, X_validate, y_validate, X_test, y_test
     and prints out the shape of train, validate, test
     '''
+    
     #create train_validate and test datasets
     train, test = train_test_split(df, train_size = 0.8, random_state = 123)
     #create train and validate datasets
