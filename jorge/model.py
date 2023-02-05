@@ -277,3 +277,34 @@ def plot_clust(df):
     df['clusters']=kmeans.predict(train_scaled)
     sns.boxplot(data=df,x='clusters',y='alcohol',hue='quality')
     plt.show()
+    
+
+def separate_column_type_list(df):
+    '''
+        Creates 2 lists separating continous & discrete
+        variables.
+        
+        Parameters
+        ----------
+        df : Pandas DataFrame
+            The DataFrame from which columns will be sorted.
+        
+        Returns
+        ----------
+        continuous_columns : list
+            Columns in DataFrame with numerical values.
+        discrete_columns : list
+            Columns in DataFrame with categorical values.
+    '''
+    continuous_columns = []
+    discrete_columns = []
+    
+    for column in df.columns:
+        if (df[column].dtype == 'int' or df[column].dtype == 'float') and ('id' not in column) and (df[column].nunique()>10):
+            continuous_columns.append(column)
+        elif(df[column].dtype == 'int' or df[column].dtype == 'float') and (df[column].nunique()>11):
+            continuous_columns.append(column)
+        else:
+            discrete_columns.append(column)
+            
+    return continuous_columns, discrete_columns
