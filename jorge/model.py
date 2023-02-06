@@ -11,8 +11,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
-import acquire
-import prepare
+from IPython.display import display, Markdown
 
 
 def split_data(df, target):
@@ -83,9 +82,8 @@ def get_dum2(df1,df2,df3):
 def get_baseline(df):
     df['baseline'] = df['quality'].value_counts().idxmax()
     (df['quality'] == df['baseline']).mean()
-    # clean f string
-    print(f"Baseline: {(df['quality'] == df['baseline']).mean()*100:.2f}%")
-    
+    # clean f string markdown
+    display(Markdown(f"### Baseline: {(df['quality'] == df['baseline']).mean()*100:.2f}%"))
 
 def get_rf(X_train, y_train, X_validate, y_validate):   
     rf2 = RandomForestClassifier(max_depth=3, random_state=42,
@@ -152,8 +150,8 @@ def get_test2(X_train, y_train, X_test, y_test):
     best_model.score(X_test,y_test)
     
      # clean f string
-    print('Logistic Regression Model')
-    print(f'Accuracy on Test {best_model.score(X_test,y_test)}')
+    display(Markdown(f'### Logistic Regression Model'))
+    display(Markdown(f'### Accuracy on Test {best_model.score(X_test,y_test)*100:.2f}%'))
     
 
 def get_mvb(X_train, y_train, X_test, y_test, wines):
@@ -309,3 +307,44 @@ def separate_column_type_list(df):
             discrete_columns.append(column)
             
     return continuous_columns, discrete_columns
+
+
+def eval_results_2(p, alpha, group1, group2):
+    '''
+        Test Hypothesis  using Statistics Test Output.
+        This function will take in the p-value, alpha, and a name for the 2 variables
+        you are comparing (group1 and group2) and return a string stating 
+        whether or not there exists a relationship between the 2 groups. 
+    '''
+    if p < alpha:
+        display(Markdown(f"### Results:"))
+        display(Markdown(f"### Reject $H_0$"))
+        display(Markdown( f'There exists some relationship between {group1} and {group2}. (p-value: {p:.4f})'))
+    
+    else:
+        display(Markdown(f"### Results:"))
+        display(Markdown(f"### Failed to Reject $H_0$"))
+        display(Markdown( f'There is not a significant relationship between {group1} and {group2}. (p-value: {p:.4f})'))
+        
+
+
+def cluster_hypothesis_test(question_number,df,question,column_name,target,alpha=.05):
+        # calculations
+        observed = pd.crosstab(df[column_name], df[target])
+        chi2, p, degf, expected = stats.chi2_contingency(observed)
+        value = chi2
+        p_value = p
+        
+        # Output variables
+        test = "Chi-Square"
+
+        # Markdown Formatting
+        display(Markdown(f"# Question #{question_number}:"))
+        display(Markdown(f"# {question}"))
+        display(Markdown(f"### Hypothesis:"))
+        display(Markdown(f"$H_0$: There is no relationship between `{column_name}` to `{target}`"))
+        display(Markdown(f"$H_A$: There is a relationship between `{column_name}` and `{target}` "))
+        display(Markdown(f"### Statistics Test:"))
+        display(Markdown(f"### `{test} = {value}`"))
+
+        eval_results_2(p_value, alpha, column_name, target)
