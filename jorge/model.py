@@ -276,6 +276,7 @@ def plot_clust(df):
     kmeans.fit(train_scaled)
     df['clusters']=kmeans.predict(train_scaled)
     sns.boxplot(data=df,x='clusters',y='alcohol',hue='quality')
+    plt.title("What about Clustering?")
     plt.show()
     
 
