@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
 from IPython.display import display, Markdown
-import acquire
-import prepare
+#import acquire
+#import prepare
 
 def separate_column_type_list(df):
     '''
